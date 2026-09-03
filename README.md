@@ -9,6 +9,26 @@
 
 ---
 
+## 📸 Interactive Web Dashboard Preview
+
+### 1. Alert Ingestion & Security Telemetry Stream
+Ingests live process alerts, LOLbin commands, network destinations, and file hashes from AegisEDR or Windows Event Logs.
+![Telemetry Stream](docs/images/telemetry_stream.png)
+
+### 2. Autonomous Investigation Verdict & OSINT Evidence
+Autonomous ReAct agent checks VirusTotal reputation, queries AbuseIPDB threat intelligence, and calculates a dynamic 0–100 risk score.
+![Investigation OSINT](docs/images/investigation_osint.png)
+
+### 3. MITRE ATT&CK Correlation
+Adversary tactics and techniques (e.g., T1003 OS Credential Dumping) correlated directly from raw command line arguments.
+![MITRE Mapping](docs/images/mitre_mapping.png)
+
+### 4. Automated Host Containment Playbook
+Generates target host remediation scripts (process tree termination & firewall isolation) executable with one click.
+![Automated Containment](docs/images/automated_containment.png)
+
+---
+
 ## 🌟 Key Architecture & Highlights
 
 - **🤖 Hybrid AI Inference Engine (100% Free or Cloud Powered):**
@@ -42,6 +62,8 @@ AegisAI-SOC/
 ├── data/
 │   ├── mitre_attack.json   # Offline MITRE ATT&CK database
 │   └── samples/            # Pre-configured realistic incident telemetry
+├── docs/
+│   └── images/             # Dashboard screenshots and UI walkthroughs
 ├── tests/
 │   └── test_investigation.py # Pytest test suite
 ├── main.py                 # CLI entrypoint
@@ -66,32 +88,11 @@ Run an autonomous investigation on a sample alert with automated containment gen
 python main.py --contain
 ```
 
-To test with a different AI provider (e.g. Gemini, Ollama):
-```powershell
-python main.py --provider gemini --contain
-```
-
 ### 3. Launch Interactive SOC Dashboard
 ```powershell
 streamlit run dashboard/app.py
 ```
 Open `http://localhost:8501` in your browser to interact with the visual triage console.
-
----
-
-## ⚙️ Configuration (.env)
-
-Copy `.env.example` to `.env` and configure your preferred provider:
-```ini
-# Choose: 'heuristic', 'gemini', 'groq', 'ollama'
-AI_PROVIDER=heuristic
-
-# Optional API Keys (Leave blank for smart offline simulation)
-GEMINI_API_KEY=
-GROQ_API_KEY=
-VIRUSTOTAL_API_KEY=
-ABUSEIPDB_API_KEY=
-```
 
 ---
 
