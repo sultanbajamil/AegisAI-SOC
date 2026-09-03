@@ -1,59 +1,54 @@
 ﻿# 🛡️ AegisAI-SOC (v1.2.0): Autonomous AI Incident Response & Triage Agent
 
-[![Version](https://img.shields.io/badge/Release-v1.2.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/Release-v1.2.0-blue.svg)](https://github.com/sultanbajamil/AegisAI-SOC/releases/tag/v1.2.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-v14.1-red.svg)](https://attack.mitre.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-v0.100%2B-green.svg)](https://fastapi.tiangolo.com/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-**AegisAI-SOC** is an enterprise-grade autonomous Security Operations Center (SOC) agent designed to automate L1/L2 triage, alert correlation, and incident response workflows. It operates as an autonomous ReAct agent that evaluates incoming endpoint/network alerts (e.g. from **AegisEDR** or Windows Event Logs), executes real-time OSINT investigations, maps adversary tactics to **MITRE ATT&CK**, calculates dynamic risk scores, and generates actionable host containment playbooks.
+**AegisAI-SOC** is an enterprise-grade autonomous Security Operations Center (SOC) platform designed to automate L1/L2 triage, alert correlation, threat intelligence enrichment, and incident response workflows. It operates as an autonomous ReAct agent evaluating incoming endpoint/network alerts (from **AegisEDR** or Windows Event Logs), executes real-time OSINT investigations, maps adversary tactics to **MITRE ATT&CK**, calculates dynamic risk scores, visualizes process lineages, and generates actionable host containment playbooks.
 
 ---
 
-## 🚀 What's New in v1.2.0
+## 📸 Interactive Web Dashboard Preview (v1.2)
 
-- 🌳 **Visual Attack Process Tree (Sankey Lineage):** Visualizes the execution progression from parent process (e.g. `explorer.exe`) to target binary (`procdump.exe`), memory injection (`lsass.exe`), and C2 egress IP.
-- 📄 **CISO & Executive PDF Report Export:** Generates formatted post-incident reports with executive summaries, technical artifact matrices, and containment scripts.
-- 💬 **AI SOC Co-Pilot (Interactive Incident Chat):** Ask questions about the active alert, query persistence vectors, and generate on-the-fly **YARA rules**.
-- 🌐 **Real-Time AegisEDR Ingestion API (`/api/v1/ingest`):** Built-in FastAPI webhook gateway allowing external EDR agents to push live telemetry.
-
----
-
-## 📸 Interactive Web Dashboard Preview
-
-### 1. Alert Ingestion & Security Telemetry Stream
-Ingests live process alerts, LOLbin commands, network destinations, and file hashes from AegisEDR or Windows Event Logs.
-![Telemetry Stream](docs/images/telemetry_stream.png)
+### 1. Alert Ingestion & Security Telemetry Stream (v1.2)
+Ingests live process alerts, LOLbin commands, network destinations, and file hashes from AegisEDR or Windows Event Logs. Shows live telemetry port status and active inference provider.
+![Telemetry Stream v1.2](docs/images/telemetry_stream_v12.png)
 
 ### 2. Autonomous Investigation Verdict & OSINT Evidence
-Autonomous ReAct agent checks VirusTotal reputation, queries AbuseIPDB threat intelligence, and calculates a dynamic 0–100 risk score.
+Autonomous ReAct agent checks VirusTotal reputation, queries AbuseIPDB threat intelligence, and calculates a dynamic 0–100 risk score in 0.32 seconds.
 ![Investigation OSINT](docs/images/investigation_osint.png)
 
-### 3. MITRE ATT&CK Correlation
-Adversary tactics and techniques (e.g., T1003 OS Credential Dumping) correlated directly from raw command line arguments.
+### 3. MITRE ATT&CK Tactic & Technique Correlation
+Adversary tactics and techniques (e.g., `[T1003] OS Credential Dumping`) correlated directly from raw command line arguments and process attributes.
 ![MITRE Mapping](docs/images/mitre_mapping.png)
 
-### 4. Automated Host Containment Playbook
+### 4. Interactive Attack Process Lineage Graph (New in v1.2)
+Visualizes the execution progression from parent process (`powershell.exe`) to spawned binary (`procdump.exe`), target memory space (`lsass.exe`), and C2 network egress IP (`185.220.101.5`).
+![Attack Process Tree](docs/images/attack_process_tree.png)
+
+### 5. Automated Host Containment Playbook
 Generates target host remediation scripts (process tree termination & firewall isolation) executable with one click.
 ![Automated Containment](docs/images/automated_containment.png)
 
+### 6. CISO & Board-Ready PDF Report Export (New in v1.2)
+Compiles comprehensive post-incident executive summaries, technical artifact matrices, and containment validation into downloadable PDFs.
+![CISO PDF Export](docs/images/ciso_pdf_export.png)
+
 ---
 
-## 🌟 Core Architecture & Capabilities
+## 🚀 Key Features in v1.2.0
 
-- **🤖 Hybrid AI Inference Engine (100% Free or Cloud Powered):**
-  - **Local Offline Models:** Seamlessly connects to local **Ollama** models (`llama3.2`, `mistral`, `qwen2.5-coder`) for complete privacy and zero data leakage.
-  - **Free Cloud APIs:** Ready toggle for **Google Gemini 1.5 Flash API** or **Groq Llama-3 API**.
-  - **Zero-Dependency Heuristic Fallback:** In-memory rule reasoning engine that works immediately without API keys or GPU requirements.
-- **🔍 Automated OSINT Threat Intelligence:**
-  - **VirusTotal v3 Integration:** Automatic file hash reputation and malware vendor consensus lookups.
-  - **AbuseIPDB Integration:** Confidence scoring, ISP, ASN, and historical malicious abuse verification for remote C2 addresses.
-  - **Offline MITRE ATT&CK Engine:** Offline STIX-based mapping for credential dumping, LOLbins, defense evasion, and ransomware tactics.
-- **⚡ Automated Incident Response Playbooks:**
-  - Dynamic **PowerShell / Bash** host containment generation.
-  - Automated targeted process tree termination (`Stop-Process`).
-  - Outbound C2 network isolation via Windows Firewall rules (`New-NetFirewallRule`).
+- 🌳 **Visual Attack Process Tree:** Interactive Sankey diagram showing process execution chains and egress connections.
+- 📄 **Executive CISO PDF Reporting:** Instant compilation of compliance-ready incident summary reports.
+- 💬 **AI SOC Co-Pilot:** Interactive chat assistant generating on-the-fly **YARA rules** and persistence audit guidance.
+- 🌐 **Real-Time AegisEDR Ingestion API (`/api/v1/ingest`):** Built-in FastAPI webhook gateway allowing external EDR sensors to push live telemetry.
+- 🤖 **Hybrid AI Inference (100% Free or Cloud Powered):**
+  - **Local Offline Models:** Connects to local **Ollama** (`llama3.2`, `mistral`, `qwen2.5-coder`).
+  - **Free Cloud APIs:** Plug-and-play toggle for **Google Gemini 1.5 Flash** or **Groq Llama-3**.
+  - **Zero-Dependency Heuristic Engine:** In-memory rule reasoning engine that works immediately without API keys or GPU.
 
 ---
 
@@ -95,7 +90,6 @@ pip install -r requirements.txt
 ```
 
 ### 2. Run Autonomous CLI Triage
-Run an autonomous investigation on a sample alert with automated containment generation:
 ```powershell
 python main.py --contain
 ```
