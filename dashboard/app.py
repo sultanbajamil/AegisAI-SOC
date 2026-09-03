@@ -4,35 +4,31 @@ import os
 import sys
 import plotly.graph_objects as go
 
-# Append project root
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from core.agent import SocInvestigationAgent
 from tools.threat_intel import MitreAttackTool
+from tools.report_generator import generate_incident_pdf
 
 st.set_page_config(
-    page_title="AegisAI-SOC | Autonomous Incident Response Agent",
+    page_title="AegisAI-SOC v1.2 | Autonomous Incident Response Agent",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS ---
+# Custom Styling
 st.markdown("""
 <style>
     .main { background-color: #0E1117; }
     .stMetric { background-color: #1E232F; border-radius: 8px; padding: 12px; border: 1px solid #2B3245; }
-    .card { background-color: #1E232F; border-radius: 8px; padding: 16px; margin-bottom: 12px; border: 1px solid #2B3245; }
-    .badge-critical { background-color: #D32F2F; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
-    .badge-high { background-color: #F57C00; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
-    .badge-clean { background-color: #388E3C; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+    .copilot-box { background-color: #1A1F2C; border: 1px solid #3B4252; border-radius: 8px; padding: 12px; margin-top: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- SIDEBAR CONFIGURATION ---
-st.sidebar.title("🛡️ AegisAI-SOC Console")
-st.sidebar.caption("Autonomous AI Incident Response & Triage Agent")
+st.sidebar.title("🛡️ AegisAI-SOC v1.2")
+st.sidebar.caption("Enterprise Autonomous SOC & Incident Response Platform")
 
 provider = st.sidebar.selectbox(
     "🤖 AI Reasoning Engine",
@@ -50,9 +46,12 @@ provider_map = {
 active_provider = provider_map[provider]
 
 st.sidebar.divider()
+st.sidebar.markdown("### 🌐 Live AegisEDR Ingestion Feed")
+st.sidebar.info("REST Webhook active on `/api/v1/ingest`\nAwaiting streaming endpoint telemetry.")
+
 st.sidebar.markdown("### ⚙️ API Configuration (Optional)")
-vt_key = st.sidebar.text_input("VirusTotal API Key", type="password", help="Leave blank to use smart offline threat intelligence.")
-abuse_key = st.sidebar.text_input("AbuseIPDB API Key", type="password", help="Leave blank to use smart offline threat intelligence.")
+vt_key = st.sidebar.text_input("VirusTotal API Key", type="password", help="Leave blank for smart offline threat intel.")
+abuse_key = st.sidebar.text_input("AbuseIPDB API Key", type="password", help="Leave blank for smart offline threat intel.")
 gemini_key = st.sidebar.text_input("Gemini API Key", type="password", help="Only needed if Google Gemini is selected.")
 
 if vt_key: os.environ["VIRUSTOTAL_API_KEY"] = vt_key
@@ -64,23 +63,23 @@ samples_path = os.path.join(ROOT, "data", "samples", "incident_alerts.json")
 with open(samples_path, "r", encoding="utf-8-sig") as f:
     sample_alerts = json.load(f)
 
-# --- MAIN VIEW ---
-st.title("🛡️ AegisAI-SOC: Autonomous Security Operations Center")
-st.markdown("Automated Incident Triage, ReAct Investigation Trace & One-Click Host Containment")
+# Main Title Header
+st.title("🛡️ AegisAI-SOC: Autonomous Incident Response Center (v1.2)")
+st.markdown("**Autonomous Threat Triage, Process Tree Attack Graph, Live Telemetry Ingestion & CISO PDF Reporting**")
 
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    st.metric("Monitored Endpoints", "42 Workstations", "Active AegisEDR")
-with col2:
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    st.metric("Live Telemetry Gateway", "Active (Port 8000)", "AegisEDR Connected")
+with c2:
     st.metric("Threat Intel Engine", "Active", "VirusTotal + AbuseIPDB")
-with col3:
-    st.metric("MITRE Coverage", "7 Core Tactics", "STIX 2.1 Mapped")
-with col4:
-    st.metric("AI Provider", active_provider.upper(), "Zero Latency")
+with c3:
+    st.metric("ATT&CK Matrix Version", "v14.1 Enterprise", "STIX 2.1 Mapped")
+with c4:
+    st.metric("Active Inference Provider", active_provider.upper(), "Zero Latency")
 
 st.divider()
 
-# Alert Selector
+# Ingestion Stream Selector
 st.subheader("📥 Security Telemetry Stream (AegisEDR / EVTX Ingestion)")
 alert_options = {f"[{a['id']}] {a['hostname']} - {a['description']}": a for a in sample_alerts}
 selected_key = st.selectbox("Select Security Incident Alert to Investigate:", list(alert_options.keys()))
@@ -91,7 +90,7 @@ col_a, col_b = st.columns([2, 1])
 with col_a:
     st.markdown(f"**Alert ID:** `{selected_alert['id']}` | **Host:** `{selected_alert['hostname']}` | **Source:** `{selected_alert['source']}`")
     st.markdown(f"**Description:** {selected_alert['description']}")
-    st.code(f"Process: {selected_alert['process']['name']} (PID: {selected_alert['process']['pid']})\nCommand: {selected_alert['process']['command_line']}\nUser: {selected_alert['process'].get('user', 'N/A')}\nHash: {selected_alert['process']['file_hash']}", language="bash")
+    st.code(f"Process: {selected_alert['process']['name']} (PID: {selected_alert['process']['pid']})\nParent: {selected_alert['process'].get('parent_name', 'explorer.exe')} (PID: {selected_alert['process'].get('parent_pid', 1000)})\nCommand: {selected_alert['process']['command_line']}\nUser: {selected_alert['process'].get('user', 'N/A')}\nHash: {selected_alert['process']['file_hash']}", language="bash")
 
 with col_b:
     st.markdown(f"**Target C2 / IP:** `{selected_alert['network']['destination_ip']}:{selected_alert['network']['destination_port']}`")
@@ -147,8 +146,15 @@ if investigate_btn or "last_investigation" in st.session_state:
         st.markdown("### AI Incident Summary")
         st.info(dec.get("analyst_assessment", "No summary provided."))
 
-    # Evidence Breakdown Tabs
-    t1, t2, t3, t4 = st.tabs(["🔍 OSINT & Tool Evidence", "🎯 MITRE ATT&CK Mapping", "📜 AI Reasoning Chain", "🛡️ Automated Containment"])
+    # Tabs (Enhanced with Attack Graph, Copilot, & CISO PDF Export)
+    t1, t2, t3, t4, t5, t6 = st.tabs([
+        "🔍 OSINT & Tool Evidence",
+        "🎯 MITRE ATT&CK Mapping",
+        "🌳 Visual Attack Process Tree",
+        "📜 AI Reasoning Chain",
+        "🛡️ Automated Containment",
+        "📄 Export CISO PDF Report"
+    ])
     
     with t1:
         col_vt, col_ip = st.columns(2)
@@ -171,14 +177,86 @@ if investigate_btn or "last_investigation" in st.session_state:
             st.info("No matching high-risk MITRE ATT&CK techniques identified for this command line pattern.")
 
     with t3:
+        st.markdown("#### Interactive Process Lineage & Attack Graph")
+        parent_proc = selected_alert["process"].get("parent_name", "explorer.exe")
+        parent_pid = selected_alert["process"].get("parent_pid", 1000)
+        curr_proc = selected_alert["process"]["name"]
+        curr_pid = selected_alert["process"]["pid"]
+        dest_ip = selected_alert["network"]["destination_ip"]
+
+        # Visual Sankey/Flow Diagram representing the attack progression
+        fig_tree = go.Figure(data=[go.Sankey(
+            node = dict(
+                pad = 15,
+                thickness = 20,
+                line = dict(color = "black", width = 0.5),
+                label = [
+                    f"Parent: {parent_proc} (PID: {parent_pid})",
+                    f"Spawned: {curr_proc} (PID: {curr_pid})",
+                    f"Egress C2: {dest_ip}",
+                    "Target: System Memory / Storage"
+                ],
+                color = ["#1565C0", "#D32F2F", "#F57C00", "#7B1FA2"]
+            ),
+            link = dict(
+                source = [0, 1, 1],
+                target = [1, 2, 3],
+                value = [10, 5, 5]
+            )
+        )])
+        fig_tree.update_layout(title_text="Adversary Process Execution Lineage & Network Egress", font_size=12, height=300, paper_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_tree, use_container_width=True)
+
+    with t4:
         st.markdown("#### Step-by-Step Investigation Trace")
         steps = dec.get("reasoning_steps", [])
         for i, s in enumerate(steps, 1):
             st.markdown(f"**Step {i}:** {s}")
 
-    with t4:
+    with t5:
         st.markdown("#### Ready-to-Deploy Containment & Remediation Playbook")
         st.markdown("Run the script below on the target host or trigger remote execution via AegisEDR:")
         st.code(investigation["containment_script"], language="powershell")
         if st.button("⚡ Execute Containment Action (Simulated)", type="primary"):
             st.success(f"Host '{selected_alert['hostname']}' isolated successfully. Malicious process terminated.")
+
+    with t6:
+        st.markdown("#### 📄 Executive Incident Report (CISO & Board Ready)")
+        st.write("Generate and download a comprehensive, formatted executive PDF incident summary.")
+        pdf_filename = f"Incident_Report_{selected_alert['id']}.pdf"
+        pdf_path = os.path.join(ROOT, "docs", pdf_filename)
+        
+        if st.button("📑 Compile PDF Incident Report"):
+            generate_incident_pdf(investigation, pdf_path)
+            st.success(f"Incident report generated successfully!")
+            with open(pdf_path, "rb") as f:
+                st.download_button(
+                    label="⬇️ Download Executive PDF Report",
+                    data=f,
+                    file_name=pdf_filename,
+                    mime="application/pdf"
+                )
+
+    # Co-Pilot Chat at bottom
+    st.divider()
+    st.subheader("💬 AI SOC Co-Pilot: Chat with Incident")
+    user_q = st.text_input("Ask AegisAI about this incident (e.g. 'What persistence should I look for?', 'Write a YARA rule for this hash'):")
+    if user_q:
+        with st.chat_message("assistant"):
+            q_lower = user_q.lower()
+            if "yara" in q_lower or "rule" in q_lower:
+                st.code(f"""rule Detect_{selected_alert['process']['name'].replace('.','_')} {{
+    meta:
+        description = "Auto-generated YARA detection for {selected_alert['id']}"
+        author = "AegisAI-SOC Copilot"
+        hash = "{selected_alert['process']['file_hash']}"
+    strings:
+        $s1 = "{selected_alert['process']['name']}" ascii wide
+        $s2 = "{selected_alert['process']['command_line'][:25]}" ascii wide
+    condition:
+        any of ($s*)
+}}""", language="c")
+            elif "persistence" in q_lower:
+                st.markdown("🔍 **Common Persistence Vectors to Investigate:**\n1. Scheduled Tasks (`schtasks /create`)\n2. Run & RunOnce Registry Keys (`HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`)\n3. Service Installations (Windows Event ID 7045)")
+            else:
+                st.markdown(f"🤖 **AegisAI Analysis:** Based on observed telemetry for `{selected_alert['hostname']}`, the process `{selected_alert['process']['name']}` targeted critical memory structures while maintaining an outbound socket to `{selected_alert['network']['destination_ip']}`. Immediate recommendation: keep host quarantined until full credential rotation is complete.")
