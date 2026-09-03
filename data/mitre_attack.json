@@ -1,0 +1,44 @@
+﻿{
+  "T1003": {
+    "name": "OS Credential Dumping",
+    "tactic": "Credential Access",
+    "description": "Adversaries may attempt to dump credentials to obtain account login and credential material, often through LSASS memory dumping or registry hives.",
+    "severity": "CRITICAL"
+  },
+  "T1059.001": {
+    "name": "PowerShell Scripting",
+    "tactic": "Execution",
+    "description": "Adversaries may abuse PowerShell commands and scripts for execution, often with bypass flags (-ExecutionPolicy Bypass -NoProfile -EncodedCommand).",
+    "severity": "HIGH"
+  },
+  "T1218": {
+    "name": "System Binary Proxy Execution (LOLbins)",
+    "tactic": "Defense Evasion",
+    "description": "Adversaries may use trusted native binaries such as certutil, mshta, rundll32, or regsvr32 to download payloads or bypass application whitelisting.",
+    "severity": "HIGH"
+  },
+  "T1486": {
+    "name": "Data Encrypted for Impact (Ransomware)",
+    "tactic": "Impact",
+    "description": "Adversaries may encrypt data on target systems to interrupt availability, often deleting volume shadow copies via vssadmin or wmic beforehand.",
+    "severity": "CRITICAL"
+  },
+  "T1071": {
+    "name": "Application Layer Protocol (C2)",
+    "tactic": "Command and Control",
+    "description": "Adversaries may communicate using application layer protocols (HTTP, HTTPS, WebSockets, DNS) to blend in with legitimate network traffic.",
+    "severity": "HIGH"
+  },
+  "T1078": {
+    "name": "Valid Accounts (Brute Force / Credential Abuse)",
+    "tactic": "Initial Access / Persistence",
+    "description": "Adversaries may obtain and abuse credentials of existing accounts through brute force (event 4625 bursts) or password spraying.",
+    "severity": "MEDIUM"
+  },
+  "T1070": {
+    "name": "Indicator Removal (Event Log Clearing)",
+    "tactic": "Defense Evasion",
+    "description": "Adversaries may delete system and security event logs (Event ID 1102 / 104) to destroy evidence of their activities.",
+    "severity": "HIGH"
+  }
+}
